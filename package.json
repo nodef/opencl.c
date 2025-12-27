@@ -1,0 +1,27 @@
+{
+  "name": "opencl.c",
+  "version": "2025.7.22",
+  "description": "C language headers for the OpenCL API; The Khronos Group (2013).",
+  "keywords": [
+    "c",
+    "library",
+    "opencl",
+    "bindings",
+    "khronos",
+    "api"
+  ],
+  "homepage": "https://github.com/nodef/opencl.c#readme",
+  "bugs": {
+    "url": "https://github.com/nodef/opencl.c/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nodef/opencl.c.git"
+  },
+  "license": "Apache-2.0",
+  "author": "wolfram77@gmail.com",
+  "main": "CL/opencl.h",
+  "scripts": {
+    "test": "bash build.sh test"
+  }
+}
