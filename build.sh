@@ -37,13 +37,16 @@ echo ""
 
 # Test the project
 test() {
-echo "Running 01-print-version.c ..."
-clang -I. -o 01.exe examples/01-print-version.c  && ./01.exe && echo -e "\n"
-echo "Running 02-simple-buffer.c ..."
-clang -I. -o 02.exe examples/02-simple-buffer.c  && ./02.exe && echo -e "\n"
-echo "Running 03-file-compress.c ..."
-clang -I. -o 03.exe examples/03-file-compress.c
-./03.exe examples/03-file-compress.c && echo -e "\n"
+echo "Running 01-vector_addition.c ..."
+clang -I. -o 01.exe examples/01-vector_addition.c        && ./01.exe && echo -e "\n"
+# echo "Running 02-matrix_multiplication.c ..."
+# clang -I. -o 02.exe examples/02-matrix_multiplication.c  && ./02.exe && echo -e "\n"
+# echo "Running 03-image_processing.c ..."
+# clang -I. -o 03.exe examples/03-image_processing.c       && ./03.exe && echo -e "\n"
+# echo "Running 04-pi_estimation.c ..."
+# clang -I. -o 04.exe examples/04-pi_estimation.c          && ./04.exe && echo -e "\n"
+# echo "Running 05-nbody_simulation.c ..."
+# clang -I. -o 05.exe examples/05-nbody_simulation.c       && ./05.exe && echo -e "\n"
 }
 
 
