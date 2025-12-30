@@ -1,34 +1,16 @@
-# OpenCL<sup>TM</sup> API C++ bindings
+# OpenCL<sup>TM</sup> API Headers
 
-Doxgen documentation for the bindings is available here:
+This repository contains C language headers for the OpenCL API.
 
-  http://khronosgroup.github.io/OpenCL-CLHPP/
+The authoritative public repository for these headers is located at:
 
-Components:
+- https://github.com/KhronosGroup/OpenCL-Headers
+- https://github.com/KhronosGroup/OpenCL-CLHPP
+- https://github.com/KhronosGroup/OpenCL-ICD-Loader
+- https://github.com/KhronosGroup/OpenCL-SDK
 
-  * `include/CL/opencl.hpp`:
-    The latest, maintained, version of the C++ bindings. It should work with all
-    versions of OpenCL (including 1.x). This is what most users will want.
-
-  * `include/CL/cl2.hpp`:
-    Includes `opencl.hpp` and emits a warning, for backwards compability.
-
-  * `docs`:
-    Doxygen file used to generate HTML documentation for `opencl.hpp`.
-
-  * `examples`:
-    A simple example application using the very basic features of the bindings.
-
-  * `tests`:
-    A (very small, incomplete) set of regression tests. Building the tests
-    requires Python, Ruby, and CMock. For the last one we use
-    [CMock top-of-tree from Github](https://github.com/ThrowTheSwitch/CMock),
-    as the latest (at the time this was written) released CMock version,
-    v2.5.3, has some issues.
-
-  * `CMakeLists.txt`:
-    Build system for the examples and tests and logic for the bindings
-    installation.
+Issues, proposed fixes for issues, and other suggested changes should be
+created using Github.
 
 <br>
 
@@ -74,54 +56,30 @@ $ gcc   -I./node_modules/opencl.c main.c
 
 <br>
 
-## Build Instructions
+## Build instructions
 
-> While the C++ Headers can be built and installed in isolation, it is part of the [OpenCL SDK](https://github.com/KhronosGroup/OpenCL-SDK). If looking for streamlined build experience and a complete development package, refer to the SDK build instructions instead of the following guide.
+> While the OpenCL Headers can be built and installed in isolation, it is part of the [OpenCL SDK](https://github.com/KhronosGroup/OpenCL-SDK). If looking for streamlined build experience and a complete development package, refer to the SDK build instructions instead of the following guide.
 
 ### Dependencies
 
-The C++ Headers require:
-
-- the [OpenCL Headers](https://github.com/KhronosGroup/OpenCL-Headers/).
-  - It is recommended to install the headers via CMake, however a convenience shorthand is provided. Providing `OPENCL_CLHPP_HEADERS_DIR` to CMake, one may specify the location of OpenCL Headers. By default, the C++ Headers will look for OpenCL Headers under `${OPENCL_DIST_DIR}/include`.
-- the [OpenCL-ICD-Loader](https://github.com/KhronosGroup/OpenCL-ICD-Loader/) when building the examples
-  - It is recommended to install the ICD loader via CMake, however a convenience shorthand is provided. Providing `OPENCL_CLHPP_LOADER_DIR` to CMake, one may specify the location of the OpenCL ICD loader. By default, the C++ headers will look for OpenCL ICD loader under `${OPENCL_DIST_DIR}/lib`.
-- The C++ Headers uses CMake for its build system.
+- The OpenCL Headers CMake package support uses CMake for its build system.
 If CMake is not provided by your build system or OS package manager, please consult the [CMake website](https://cmake.org).
-- The unit tests require [CMock](https://github.com/ThrowTheSwitch/CMock). To get this external dependency, use `--recursive` when cloning
-the repository, or run `git submodule update --init --recursive`.
-- Generating the mock input requires [Ruby](https://www.ruby-lang.org/en/).
-- Generating the docs requires Doxygen. When it is available, you can generate HTML documentation by building the `docs` target.
 
 ### Example Build
+While the headers may just be copied as-is, this repository also contains a
+CMake script with an install rule to allow for packaging the headers.
 
-1. Clone this repo, the OpenCL ICD Loader and the OpenCL Headers:
-
-        git clone --recursive https://github.com/KhronosGroup/OpenCL-CLHPP
-        git clone https://github.com/KhronosGroup/OpenCL-ICD-Loader
-        git clone https://github.com/KhronosGroup/OpenCL-Headers
-
-1. Install OpenCL Headers CMake package
-
-        cmake -D CMAKE_INSTALL_PREFIX=./OpenCL-Headers/install -S ./OpenCL-Headers -B ./OpenCL-Headers/build
-        cmake --build ./OpenCL-Headers/build --target install
-
-1. Build and install OpenCL ICD Loader CMake package. _(Note that `CMAKE_PREFIX_PATH` need to be an absolute path. Update as needed.)_
-
-        cmake -D CMAKE_PREFIX_PATH=/absolute/path/to/OpenCL-Headers/install -D CMAKE_INSTALL_PREFIX=./OpenCL-ICD-Loader/install -S ./OpenCL-ICD-Loader -B ./OpenCL-ICD-Loader/build
-        cmake --build ./OpenCL-ICD-Loader/build --target install
-
-1. Build and install OpenCL C++ Headers CMake package.
-
-        cmake -D CMAKE_PREFIX_PATH="/absolute/path/to/OpenCL-Headers/install;/absolute/path/to/OpenCL-ICD-Loader/install" -D CMAKE_INSTALL_PREFIX=./OpenCL-CLHPP/install -S ./OpenCL-CLHPP -B ./OpenCL-CLHPP/build
-        cmake --build ./OpenCL-CLHPP/build --target install
+```bash
+cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/chosen/install/prefix
+cmake --build build --target install
+```
 
 ### Example Use
 
 Example CMake invocation
 
 ```bash
-cmake -D CMAKE_PREFIX_PATH="/chosen/install/prefix/of/headers;/chosen/install/prefix/of/loader;/chosen/install/prefix/of/cppheaders" /path/to/opencl/app
+cmake -D CMAKE_PREFIX_PATH=/chosen/install/prefix /path/to/opencl/app
 ```
 
 and sample `CMakeLists.txt`
@@ -132,10 +90,133 @@ cmake_policy(VERSION 3.0...3.18.4)
 project(proj)
 add_executable(app main.cpp)
 find_package(OpenCLHeaders REQUIRED)
-find_package(OpenCLICDLoader REQUIRED)
-find_package(OpenCLHeadersCpp REQUIRED)
-target_link_libraries(app PRIVATE OpenCL::Headers OpenCL::OpenCL OpenCL::HeadersCpp)
+target_link_libraries(app PRIVATE OpenCL::Headers)
 ```
+
+<br>
+
+## Branch Structure
+
+The OpenCL API headers in this repository are Unified headers and are designed
+to work with all released OpenCL versions. This differs from previous OpenCL
+API headers, where version-specific API headers either existed in separate
+branches, or in separate folders in a branch.
+
+<br>
+
+## Compiling for a Specific OpenCL Version
+
+By default, the OpenCL API headers in this repository are for the latest
+OpenCL version (currently OpenCL 3.0).  To use these API headers to target
+a different OpenCL version, an application may `#define` the preprocessor
+value `CL_TARGET_OPENCL_VERSION` before including the OpenCL API headers.
+The `CL_TARGET_OPENCL_VERSION` is a three digit decimal value representing
+the OpenCL API version.
+
+For example, to enforce usage of no more than the OpenCL 1.2 APIs, you may
+include the OpenCL API headers as follows:
+
+```c
+#define CL_TARGET_OPENCL_VERSION 120
+#include <CL/opencl.h>
+```
+
+<br>
+
+## Controlling Function Prototypes
+
+By default, the OpenCL API headers in this repository declare function
+prototypes for every known core OpenCL API and OpenCL extension API.  If this is
+not desired, the declared function prototypes can be controlled by the following
+preprocessor defines:
+
+* `CL_NO_PROTOTYPES`: No function prototypes will be declared.  This control
+  applies to core OpenCL APIs and OpenCL extension APIs.
+* `CL_NO_CORE_PROTOTYPES`: No function prototypes will be declared for core
+  OpenCL APIs.
+* `CL_NO_EXTENSION_PROTOTYPES`: No function prototypes will be declared for
+  OpenCL extension APIs.  This control applies to all OpenCL extension APIs.
+* `CL_NO_ICD_DISPATCH_EXTENSION_PROTOTYPES`: No function prototypes will be
+  declared for OpenCL extension APIs that are in the ICD dispatch table for
+  historical reasons.
+* `CL_NO_NON_ICD_DISPATCH_EXTENSION_PROTOTYPES`: No function prototypes will be
+  declared for OpenCL extension APIs that are not in the ICD dispatch table.
+
+For example, to declare function prototypes for core OpenCL 3.0 APIs only, you
+may include the OpenCL API headers as follows:
+
+```c
+#define CL_TARGET_OPENCL_VERSION 300
+#define CL_NO_EXTENSION_PROTOTYPES
+#include <CL/opencl.h>
+```
+
+<br>
+
+## Compatibility Notes
+
+OpenCL values backward compatibility and in most cases an application using an
+older version of the OpenCL API headers can seamlessly update to a newer version
+of the OpenCL API headers.  In rare cases, though, the OpenCL API headers may
+break backward compatibility:
+
+* Very rarely, there may be bugs or other issues in the OpenCL API headers that
+  cannot be fixed without breaking compatibility.
+* The OpenCL API headers for beta features or beta extensions may
+  be changed in a way that breaks compatibility.
+
+Applications or libraries that require stable OpenCL API headers are encouraged
+to use tagged or released OpenCL API headers.  We will do our best to document
+any breaking changes in the description of each release.  The OpenCL API headers
+are tagged at least as often as each OpenCL specification release.
+
+<br>
+
+## Beta Extensions
+
+Beta extensions are extensions that are still in development and are
+hence subject to change. To further improve compatibility for applications that
+do not use beta features, support for beta extensions must be
+explicitly enabled.  Support for beta extensions is controlled by the
+`CL_ENABLE_BETA_EXTENSIONS` preprocessor define.
+
+For example, to enable support for OpenCL 3.0 APIs and all extensions, including
+beta extensions, you may include the OpenCL API headers as follows:
+
+```c
+#define CL_TARGET_OPENCL_VERSION 300
+#define CL_ENABLE_BETA_EXTENSIONS
+#include <CL/opencl.h>
+```
+
+<br>
+
+## Directory Structure
+
+```
+README.md               This file
+LICENSE                 Source license for the OpenCL API headers
+CL/                     Unified OpenCL API headers tree
+scripts/                Scripts for generating OpenCL extension headers
+tests/                  OpenCL API header tests
+```
+
+<br>
+
+## Packaging
+
+For packaging instructions, see [RELEASE.md](https://github.com/KhronosGroup/OpenCL-SDK/blob/main/docs/RELEASE.md)
+in the OpenCL SDK repository.
+
+<br>
+
+## License
+
+See [LICENSE](LICENSE).
+
+---
+
+OpenCL and the OpenCL logo are trademarks of Apple Inc. used by permission by Khronos.
 
 <br>
 <br>
